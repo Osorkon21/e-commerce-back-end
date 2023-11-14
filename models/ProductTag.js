@@ -4,6 +4,7 @@ const sequelize = require('../config/connection');
 
 class ProductTag extends Model { }
 
+// initialize ProductTag Model as a junction table
 ProductTag.init(
   {
     id: {
@@ -12,6 +13,8 @@ ProductTag.init(
       primaryKey: true,
       autoIncrement: true
     },
+
+    // add foreign Product key
     product_id: {
       type: DataTypes.INTEGER,
       references: {
@@ -19,6 +22,8 @@ ProductTag.init(
         key: 'id'
       }
     },
+
+    // add foreign Tag key
     tag_id: {
       type: DataTypes.INTEGER,
       references: {
