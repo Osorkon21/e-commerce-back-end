@@ -1,9 +1,15 @@
+// import express router
 const router = require('express').Router();
+
+// import models
 const { Tag, Product } = require('../../models');
 
+// get all Tags
 router.get('/', async (req, res) => {
   try {
     const result = await Tag.findAll({
+
+      // include Products associated with these Tags
       include: [{
         model: Product,
         through: {
@@ -20,9 +26,14 @@ router.get('/', async (req, res) => {
   }
 });
 
+// get a Tag
 router.get('/:id', async (req, res) => {
   try {
+
+    // does Tag exist?
     const result = await Tag.findByPk(req.params.id, {
+
+      // include Products associated with these Tags
       include: [{
         model: Product,
         through: {
@@ -32,6 +43,7 @@ router.get('/:id', async (req, res) => {
       }]
     });
 
+    // if Tag does not exist, send failure message back and do nothing else
     if (!result) {
       res.status(404).json({ message: "No tag found with that ID!" });
       return;
@@ -44,6 +56,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// create new Tag
 router.post('/', async (req, res) => {
   try {
     const result = await Tag.create(req.body);
@@ -54,15 +67,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+// update existing Tag
 router.put('/:id', async (req, res) => {
   try {
+
+    // does Tag exist?
     const tag = await Tag.findByPk(req.params.id);
 
+    // if Tag does not exist, send failure message back and do nothing else
     if (!tag) {
       res.status(404).json({ result: `PUT failed - no tag found with ID ${req.params.id}!` });
       return;
     }
 
+    // update Tag
     const result = await tag.update(
       {
         tag_name: req.body.tag_name
@@ -81,15 +99,20 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// delete a Tag
 router.delete('/:id', async (req, res) => {
   try {
+
+    // does Tag exist?
     const tag = await Tag.findByPk(req.params.id);
 
+    // if Tag does not exist, send failure message back and do nothing else
     if (!tag) {
       res.status(404).json({ result: `DELETE failed - no tag found with ID ${req.params.id}!` });
       return;
     }
 
+    // delete Tag
     await tag.destroy({
       where: {
         id: req.params.id

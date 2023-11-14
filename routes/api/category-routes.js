@@ -1,9 +1,15 @@
+// import express router
 const router = require('express').Router();
+
+// import models
 const { Category, Product } = require('../../models');
 
+// get all Categories
 router.get('/', async (req, res) => {
   try {
     const result = await Category.findAll({
+
+      // include Products associated with these Categories
       include: [{ model: Product }]
     });
 
@@ -14,12 +20,18 @@ router.get('/', async (req, res) => {
   }
 });
 
+// get a Category
 router.get('/:id', async (req, res) => {
   try {
+
+    // does Category exist?
     const result = await Category.findByPk(req.params.id, {
+
+      // include Products associated with this Category
       include: [{ model: Product }]
     });
 
+    // if Category does not exist, send failure message back and do nothing else
     if (!result) {
       res.status(404).json({ message: "No category found with that ID!" });
       return;
@@ -32,6 +44,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// create a new Category
 router.post('/', async (req, res) => {
   try {
     const result = await Category.create(req.body);
@@ -42,15 +55,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+// update an existing Category
 router.put('/:id', async (req, res) => {
   try {
+
+    // does Category exist?
     const category = await Category.findByPk(req.params.id);
 
+    // if Category does not exist, send failure message back and do nothing else
     if (!category) {
       res.status(404).json({ result: `PUT failed - no category found with ID ${req.params.id}!` });
       return;
     }
 
+    // update selected Category
     const result = await category.update(
       {
         category_name: req.body.category_name
@@ -69,15 +87,20 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// delete Category
 router.delete('/:id', async (req, res) => {
   try {
+
+    // does Category exist?
     const category = await Category.findByPk(req.params.id);
 
+    // if Category does not exist, send failure message back and do nothing else
     if (!category) {
       res.status(404).json({ result: `DELETE failed - no category found with ID ${req.params.id}!` });
       return;
     }
 
+    // delete Category
     await category.destroy({
       where: {
         id: req.params.id

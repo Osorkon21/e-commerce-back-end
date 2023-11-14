@@ -1,9 +1,15 @@
+// import express router
 const router = require('express').Router();
+
+// import models
 const { Product, Category, Tag, ProductTag } = require('../../models');
 
+// get all products
 router.get('/', async (req, res) => {
   try {
     const result = await Product.findAll({
+
+      // include Categories and Tags associated with these Products
       include: [{
         model: Category
       },
@@ -23,9 +29,12 @@ router.get('/', async (req, res) => {
   }
 });
 
+// get a product
 router.get('/:id', async (req, res) => {
   try {
     const result = await Product.findByPk(req.params.id, {
+
+      // include Categories and Tags associated with this Product
       include: [{
         model: Category
       },
@@ -127,15 +136,20 @@ router.put('/:id', (req, res) => {
     });
 });
 
+// delete a product
 router.delete('/:id', async (req, res) => {
   try {
+
+    // does product exist?
     const product = await Product.findByPk(req.params.id);
 
+    // if product not found, send failure message back and do nothing else
     if (!product) {
       res.status(404).json({ result: `DELETE failed - no product found with ID ${req.params.id}!` });
       return;
     }
 
+    // delete product by ID
     await product.destroy({
       where: {
         id: req.params.id
