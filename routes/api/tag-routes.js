@@ -33,7 +33,7 @@ router.get('/:id', async (req, res) => {
     // does Tag exist?
     const result = await Tag.findByPk(req.params.id, {
 
-      // include Products associated with these Tags
+      // include Products associated with this Tag
       include: [{
         model: Product,
         through: {
